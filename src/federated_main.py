@@ -36,7 +36,7 @@ if __name__ == '__main__':
     # load dataset and user groups
     train_dataset, test_dataset, user_groups = get_dataset(args)
 
-    target_accuracy = 0.97  # 97% target accuracy for MNIST + MLP
+    target_test_accuracy = 0.99  # 97% test target accuracy for MNIST
 
     # BUILD MODEL
     if args.model == 'cnn':
@@ -113,23 +113,31 @@ if __name__ == '__main__':
             list_loss.append(loss)
         train_accuracy.append(sum(list_acc)/len(list_acc))
 
-        # print global training loss after every 'i' rounds
-        if (epoch+1) % print_every == 0:
-            print(f' \nAvg Training Stats after {epoch+1} global rounds:')
-            print(f'Training Loss : {np.mean(np.array(train_loss))}')
-            print('Train Accuracy: {:.2f}% \n'.format(100*train_accuracy[-1]))
+        # # print global training loss after every 'i' rounds
+        # if (epoch+1) % print_every == 0:
+        #     print(f' \nAvg Training Stats after {epoch+1} global rounds:')
+        #     print(f'Training Loss : {np.mean(np.array(train_loss))}')
+        #     print('Train Accuracy: {:.2f}% \n'.format(100*train_accuracy[-1]))
 
-        if train_accuracy[-1] >= target_accuracy:
-            print(f"Target accuracy of {target_accuracy * 100}% reached.")
-            print(f"Communication rounds needed: {epoch + 1}")
+        test_acc, test_loss = test_inference(args, global_model, test_dataset)
+
+        print(f' \nAvg Training Stats after {epoch + 1} global rounds:')
+        print(f'Training Loss : {np.mean(np.array(train_loss))}')
+        print('Train Accuracy: {:.2f}% \n'.format(100 * train_accuracy[-1]))
+        print('Test Accuracy: {:.2f}% \n'.format(100 * test_acc))
+
+        # Check if the target accuracy is achieved
+        if test_acc >= target_test_accuracy:
+            print(f'Target Test Accuracy of {target_test_accuracy * 100}% reached at round {epoch + 1}.')
+            achieved_target_accuracy = True
             break
 
-    # Test inference after completion of training
-    test_acc, test_loss = test_inference(args, global_model, test_dataset)
+    # # Test inference after completion of training
+    # test_acc, test_loss = test_inference(args, global_model, test_dataset)
 
-    print(f' \n Results after {args.epochs} global rounds of training:')
-    print("|---- Avg Train Accuracy: {:.2f}%".format(100*train_accuracy[-1]))
-    print("|---- Test Accuracy: {:.2f}%".format(100*test_acc))
+    # print(f' \n Results after {args.epochs} global rounds of training:')
+    # print("|---- Avg Train Accuracy: {:.2f}%".format(100*train_accuracy[-1]))
+    # print("|---- Test Accuracy: {:.2f}%".format(100*test_acc))
 
     # Saving the objects train_loss and train_accuracy:
     os.makedirs('save/objects/', exist_ok=True)
