@@ -36,6 +36,8 @@ if __name__ == '__main__':
     # load dataset and user groups
     train_dataset, test_dataset, user_groups = get_dataset(args)
 
+    target_accuracy = 0.97  # 97% target accuracy for MNIST + MLP
+
     # BUILD MODEL
     if args.model == 'cnn':
         # Convolutional neural netork
@@ -116,6 +118,11 @@ if __name__ == '__main__':
             print(f' \nAvg Training Stats after {epoch+1} global rounds:')
             print(f'Training Loss : {np.mean(np.array(train_loss))}')
             print('Train Accuracy: {:.2f}% \n'.format(100*train_accuracy[-1]))
+
+        if train_accuracy[-1] >= target_accuracy:
+            print(f"Target accuracy of {target_accuracy * 100}% reached.")
+            print(f"Communication rounds needed: {epoch + 1}")
+            break
 
     # Test inference after completion of training
     test_acc, test_loss = test_inference(args, global_model, test_dataset)
