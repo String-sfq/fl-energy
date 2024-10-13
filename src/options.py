@@ -23,6 +23,8 @@ def args_parser():
                         help='learning rate')
     parser.add_argument('--momentum', type=float, default=0.5,
                         help='SGD momentum (default: 0.5)')
+    parser.add_argument('--target_test_accuracy', type=float, default=0.99,
+                        help="target_test_accuracy")
 
     # model arguments
     parser.add_argument('--model', type=str, default='mlp', help='model name')

@@ -36,7 +36,6 @@ if __name__ == '__main__':
     # load dataset and user groups
     train_dataset, test_dataset, user_groups = get_dataset(args)
 
-    target_test_accuracy = 0.99  # 97% test target accuracy for MNIST
 
     # BUILD MODEL
     if args.model == 'cnn':
@@ -127,8 +126,8 @@ if __name__ == '__main__':
         print('Test Accuracy: {:.2f}% \n'.format(100 * test_acc))
 
         # Check if the target accuracy is achieved
-        if test_acc >= target_test_accuracy:
-            print(f'Target Test Accuracy of {target_test_accuracy * 100}% reached at round {epoch + 1}.')
+        if test_acc >= args.target_test_accuracy:
+            print(f'Target Test Accuracy of {args.target_test_accuracy * 100}% reached at round {epoch + 1}.')
             achieved_target_accuracy = True
             break
 
