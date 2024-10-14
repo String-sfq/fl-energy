@@ -5,6 +5,7 @@
 
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+import numpy as np
 
 import torch
 from torch.utils.data import DataLoader
@@ -83,6 +84,17 @@ if __name__ == '__main__':
         loss_avg = sum(batch_loss)/len(batch_loss)
         print('\nTrain loss:', loss_avg)
         epoch_loss.append(loss_avg)
+
+        # testing
+        test_acc, test_loss = test_inference(args, global_model, test_dataset)
+        print('Test on', len(test_dataset), 'samples')
+        print("Test Accuracy: {:.2f}%".format(100 * test_acc))
+
+        # Check if the target accuracy is achieved
+        if test_acc >= args.target_test_accuracy:
+            print(f'Target Test Accuracy of {args.target_test_accuracy * 100}% reached at round {epoch + 1}.')
+            achieved_target_accuracy = True
+            break
 
     # Plot loss
     plt.figure()
